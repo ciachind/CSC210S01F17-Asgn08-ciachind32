@@ -97,8 +97,7 @@ public class MainActivityFragment extends Fragment
         }
 
         // set questionNumberTextView's text
-        questionNumberTextView.setText(
-                getString(R.string.question, 1, SIGNS_IN_QUIZ));
+        questionNumberTextView.setText(getString(R.string.question, 1, SIGNS_IN_QUIZ));
         return view; // return the fragment's view for display
     }
 
