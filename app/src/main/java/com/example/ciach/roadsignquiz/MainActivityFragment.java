@@ -30,6 +30,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import static com.example.ciach.roadsignquiz.R.id.signImageView;
@@ -51,10 +52,10 @@ public class MainActivityFragment extends Fragment
     private Handler handler; // used to delay loading next sign
     private Animation shakeAnimation; // animation for incorrect guess
 
-    private ConstraintLayout quizConstraintLayout; // layout that contains the quiz
+    private LinearLayout quizLinearLayout; // layout that contains the quiz
     private TextView questionNumberTextView; // shows current question #
     private ImageView signImageView; // displays a flag
-    private ConstraintLayout[] guessConstraintLayouts; // rows of answer Buttons
+    private LinearLayout[] guessLinearLayouts; // rows of answer Buttons
     private TextView answerTextView; // displays correct answer
 
     // configures the MainActivityFragment when its View is created
@@ -76,24 +77,19 @@ public class MainActivityFragment extends Fragment
         shakeAnimation.setRepeatCount(3); // animation repeats 3 times
 
         // get references to GUI components
-        quizConstraintLayout =
-                (ConstraintLayout) view.findViewById(R.id.quizConstraintLayout);
+        quizLinearLayout =
+                (LinearLayout) view.findViewById(R.id.quizLinearLayout);
         questionNumberTextView =
                 (TextView) view.findViewById(R.id.questionNumberTextView);
-        signImageView = (ImageView) view.findViewById(signImageView);
-        guessConstraintLayouts = new ConstraintLayout[4];
-        guessConstraintLayouts[0] =
-                (ConstraintLayout) view.findViewById(R.id.row1ConstraintLayout);
-        guessConstraintLayouts[1] =
-                (ConstraintLayout) view.findViewById(R.id.row2ConstraintLayout);
-        guessConstraintLayouts[2] =
-                (ConstraintLayout) view.findViewById(R.id.row3ConstraintLayout);
-        guessConstraintLayouts[3] =
-                (ConstraintLayout) view.findViewById(R.id.row4ConstraintLayout);
-        answerTextView = (TextView) view.findViewById(R.id.answerTextView);
+        signImageView = (ImageView) view.findViewById(R.id.signImageView);
+        guessLinearLayouts = new LinearLayout[4];
+        guessLinearLayouts[0] =
+                (LinearLayout) view.findViewById(R.id.row1LinearLayout);
+        guessLinearLayouts[1] =
+                (LinearLayout) view.findViewById(R.id.row2LinearLayout);
 
         // configure listeners for the guess Buttons
-        for (ConstraintLayout row : guessConstraintLayouts) {
+        for (LinearLayout row : guessLinearLayouts) {
             for (int column = 0; column < row.getChildCount(); column++) {
                 Button button = (Button) row.getChildAt(column);
                 button.setOnClickListener(guessButtonListener);
@@ -115,12 +111,12 @@ public class MainActivityFragment extends Fragment
         guessRows = Integer.parseInt(choices) / 2;
 
         // hide all guess button LinearLayouts
-        for (ConstraintLayout layout : guessConstraintLayouts)
+        for (LinearLayout layout : guessLinearLayouts)
             layout.setVisibility(View.GONE);
 
-        // display appropriate guess button ConstraintLayouts
+        // display appropriate guess button LinearLayouts
         for (int row = 0; row < guessRows; row++)
-            guessConstraintLayouts[row].setVisibility(View.VISIBLE);
+            guessLinearLayouts[row].setVisibility(View.VISIBLE);
     }
 
     // set up and start the next quiz
@@ -145,7 +141,7 @@ public class MainActivityFragment extends Fragment
         quizSignList.clear(); // clear prior list of quiz countries
 
         int signCounter = 1;
-        int numberOfFlags = fileNameList.size();
+        int numberOfSigns = fileNameList.size();
 
         // add SIGNS_IN_QUIZ random file names to the quizSignList
         while (signCounter <= SIGNS_IN_QUIZ)
@@ -200,15 +196,15 @@ public class MainActivityFragment extends Fragment
         {
             // place Buttons in currentTableRow
             for (int column = 0;
-                 column < guessConstraintLayouts[row].getChildCount();
+                 column < guessLinearLayouts[row].getChildCount();
                  column++)
             {
                 // get reference to Button to configure
                 Button newGuessButton =
-                        (Button) guessConstraintLayouts[row].getChildAt(column);
+                        (Button) guessLinearLayouts[row].getChildAt(column);
                 newGuessButton.setEnabled(true);
 
-                // get flag name and set it as newGuessButton's text
+                // get sign name and set it as newGuessButton's text
                 String filename = fileNameList.get((row * 2) + column);
                 newGuessButton.setText(getSignName(filename));
             }
@@ -217,7 +213,7 @@ public class MainActivityFragment extends Fragment
         // randomly replace one Button with the correct answer
         int row = random.nextInt(guessRows); // pick random row
         int column = random.nextInt(2); // pick random column
-        ConstraintLayout randomRow = guessConstraintLayouts[row]; // get the row
+        LinearLayout randomRow = guessLinearLayouts[row]; // get the row
         String signName = getSignName(correctAnswer);
         ((Button) randomRow.getChildAt(column)).setText(signName);
     }
@@ -236,23 +232,23 @@ public class MainActivityFragment extends Fragment
             return;
 
         // calculate center x and center y
-        int centerX = (quizConstraintLayout.getLeft() +
-                quizConstraintLayout.getRight()) / 2; // calculate center x
-        int centerY = (quizConstraintLayout.getTop() +
-                quizConstraintLayout.getBottom()) / 2; // calculate center y
+        int centerX = (quizLinearLayout.getLeft() +
+                quizLinearLayout.getRight()) / 2; // calculate center x
+        int centerY = (quizLinearLayout.getTop() +
+                quizLinearLayout.getBottom()) / 2; // calculate center y
 
         // calculate animation radius
-        int radius = Math.max(quizConstraintLayout.getWidth(),
-                quizConstraintLayout.getHeight());
+        int radius = Math.max(quizLinearLayout.getWidth(),
+                quizLinearLayout.getHeight());
 
         Animator animator;
 
-        // if the quizConstraintLayout should animate out rather than in
+        // if the quizLinearLayout should animate out rather than in
         if (animateOut)
         {
             // create circular reveal animation
             animator = ViewAnimationUtils.createCircularReveal(
-                    quizConstraintLayout, centerX, centerY, radius, 0);
+                    quizLinearLayout, centerX, centerY, radius, 0);
             animator.addListener(
                     new AnimatorListenerAdapter() {
                         // called when the animation finishes
@@ -264,9 +260,9 @@ public class MainActivityFragment extends Fragment
                     }
             );
         }
-        else { // if the quizConstraintLayout should animate in
+        else { // if the quizLinearLayout should animate in
             animator = ViewAnimationUtils.createCircularReveal(
-                    quizConstraintLayout, centerX, centerY, 0, radius);
+                    quizLinearLayout, centerX, centerY, 0, radius);
         }
 
         animator.setDuration(500); // set animation duration to 500 ms
@@ -360,7 +356,7 @@ public class MainActivityFragment extends Fragment
     {
         for (int row = 0; row < guessRows; row++)
         {
-            ConstraintLayout guessRow = guessConstraintLayouts[row];
+            LinearLayout guessRow = guessLinearLayouts[row];
             for (int i = 0; i < guessRow.getChildCount(); i++)
                 guessRow.getChildAt(i).setEnabled(false);
         }

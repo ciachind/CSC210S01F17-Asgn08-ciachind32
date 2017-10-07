@@ -3,7 +3,6 @@
 package com.example.ciach.roadsignquiz;
 
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
