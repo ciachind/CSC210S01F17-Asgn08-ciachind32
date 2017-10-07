@@ -32,6 +32,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import static com.example.ciach.roadsignquiz.R.id.signImageView;
+
 public class MainActivityFragment extends Fragment
 {
     // String used when logging error messages
@@ -78,7 +80,7 @@ public class MainActivityFragment extends Fragment
                 (LinearLayout) view.findViewById(R.id.quizLinearLayout);
         questionNumberTextView =
                 (TextView) view.findViewById(R.id.questionNumberTextView);
-        signImageView = (ImageView) view.findViewById(R.id.signImageView);
+        signImageView = (ImageView) view.findViewById(signImageView);
         guessLinearLayouts = new LinearLayout[4];
         guessLinearLayouts[0] =
                 (LinearLayout) view.findViewById(R.id.row1LinearLayout);
@@ -224,7 +226,7 @@ public class MainActivityFragment extends Fragment
         int column = random.nextInt(2); // pick random column
         LinearLayout randomRow = guessLinearLayouts[row]; // get the row
         String signName = getSignName(correctAnswer);
-        ((Button) randomRow.getChildAt(column)).setText(countryName);
+        ((Button) randomRow.getChildAt(column)).setText(signName);
     }
 
     // parses the sign file name and returns the sign name
