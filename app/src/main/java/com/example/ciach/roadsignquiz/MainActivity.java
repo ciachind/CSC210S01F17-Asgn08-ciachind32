@@ -64,8 +64,7 @@ public class MainActivity extends AppCompatActivity {
             // now that the default preferences have been set,
             // initialize MainActivityFragment and start the quiz
             MainActivityFragment quizFragment = (MainActivityFragment)
-                    getSupportFragmentManager().findFragmentById(
-                            R.id.quizFragment);
+                    getSupportFragmentManager().findFragmentById(R.id.quizFragment);
             quizFragment.updateGuessRows(
                     PreferenceManager.getDefaultSharedPreferences(this));
             quizFragment.resetQuiz();

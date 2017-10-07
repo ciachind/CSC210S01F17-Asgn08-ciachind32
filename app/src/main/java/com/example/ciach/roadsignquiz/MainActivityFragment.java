@@ -17,7 +17,6 @@ import android.content.res.AssetManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -33,18 +32,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import static com.example.ciach.roadsignquiz.R.id.signImageView;
 
 public class MainActivityFragment extends Fragment
 {
     // String used when logging error messages
-    private static final String TAG = "RoadSign Activity";
+    private static final String TAG = "RoadSignQuiz Activity";
 
-    private static final int ROADSIGNS_IN_QUIZ = 8;
+    private static final int SIGNS_IN_QUIZ = 8;
 
     private List<String> fileNameList; // SignNames file names
     private List<String> quizSignList; // signs in current quiz
-    private String correctAnswer; // correct SignName for the current flag
+    private String correctAnswer; // correct SignName for the current sign
     private int totalGuesses; // number of guesses made
     private int correctAnswers; // number of correct guesses
     private int guessRows; // number of rows displaying guess Buttons
@@ -126,10 +124,15 @@ public class MainActivityFragment extends Fragment
         fileNameList.clear(); // empty list of image file names
 
         try {
+
+            {
+                // get a list of all sign image files in this region
+                String[] paths = assets.list(".png");
+
                 for (String path : paths)
                     fileNameList.add(path.replace(".png", ""));
-
             }
+        }
         catch (IOException exception)
         {
             Log.e(TAG, "Error loading image file names", exception);
@@ -269,7 +272,7 @@ public class MainActivityFragment extends Fragment
     }
 
     // called when a guess Button is touched
-    private OnClickListener guessButtonListener = new OnClickListener()
+    public OnClickListener guessButtonListener = new OnClickListener()
     {
         @Override
         public void onClick(View v)
