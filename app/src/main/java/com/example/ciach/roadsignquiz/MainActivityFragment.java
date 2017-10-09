@@ -80,7 +80,7 @@ public class MainActivityFragment extends Fragment
         questionNumberTextView =
                 (TextView) view.findViewById(R.id.questionNumberTextView);
         signImageView = (ImageView) view.findViewById(R.id.signImageView);
-        guessLinearLayouts = new LinearLayout[4];
+        guessLinearLayouts = new LinearLayout[2];
         guessLinearLayouts[0] =
                 (LinearLayout) view.findViewById(R.id.row1LinearLayout);
         guessLinearLayouts[1] =
@@ -127,10 +127,10 @@ public class MainActivityFragment extends Fragment
 
             {
                 // get a list of all sign image files in this region
-                String[] paths = assets.list(".png");
+                String[] paths = assets.list("RoadSigns");
 
                 for (String path : paths)
-                    fileNameList.add(path.replace(".png", ""));
+                    fileNameList.add(path.replace("RoadSigns", ""));
             }
         }
         catch (IOException exception)
@@ -272,7 +272,7 @@ public class MainActivityFragment extends Fragment
     }
 
     // called when a guess Button is touched
-    public OnClickListener guessButtonListener = new OnClickListener()
+    protected OnClickListener guessButtonListener = new OnClickListener()
     {
         @Override
         public void onClick(View v)
