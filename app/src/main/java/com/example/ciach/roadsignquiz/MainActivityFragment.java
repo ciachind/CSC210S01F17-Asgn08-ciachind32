@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-
+import android.support.annotation.NonNull;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.AlertDialog;
@@ -17,6 +17,7 @@ import android.content.res.AssetManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -76,16 +77,16 @@ public class MainActivityFragment extends Fragment
 
         // get references to GUI components
         quizLinearLayout =
-                (LinearLayout) view.findViewById(R.id.quizLinearLayout);
+                view.findViewById(R.id.quizLinearLayout);
         questionNumberTextView =
-                (TextView) view.findViewById(R.id.questionNumberTextView);
-        signImageView = (ImageView) view.findViewById(R.id.signImageView);
+                view.findViewById(R.id.questionNumberTextView);
+        signImageView = view.findViewById(R.id.signImageView);
         guessLinearLayouts = new LinearLayout[2];
         guessLinearLayouts[0] =
-                (LinearLayout) view.findViewById(R.id.row1LinearLayout);
+                view.findViewById(R.id.row1LinearLayout);
         guessLinearLayouts[1] =
-                (LinearLayout) view.findViewById(R.id.row2LinearLayout);
-
+                view.findViewById(R.id.row2LinearLayout);
+        answerTextView = (TextView) view.findViewById(R.id.answerTextView);
         // configure listeners for the guess Buttons
         for (LinearLayout row : guessLinearLayouts) {
             for (int column = 0; column < row.getChildCount(); column++) {
@@ -127,10 +128,10 @@ public class MainActivityFragment extends Fragment
 
             {
                 // get a list of all sign image files in this region
-                String[] paths = assets.list("RoadSigns");
+                String[] paths = assets.list(".png");
 
                 for (String path : paths)
-                    fileNameList.add(path.replace("RoadSigns", ""));
+                    fileNameList.add(path.replace(".png", ""));
             }
         }
         catch (IOException exception)
@@ -145,15 +146,19 @@ public class MainActivityFragment extends Fragment
         int signCounter = 1;
         int numberOfSigns = fileNameList.size();
 
-        // add SIGNS_IN_QUIZ random file names to the quizSignList
-        while (signCounter <= SIGNS_IN_QUIZ)
-        {
+        // add FLAGS_IN_QUIZ random file names to the quizCountriesList
+        while (signCounter <= SIGNS_IN_QUIZ) {
             int randomIndex = random.nextInt(numberOfSigns);
 
             // get the random file name
             String filename = fileNameList.get(randomIndex);
-        }
 
+            // if the region is enabled and it hasn't already been chosen
+            if (!quizSignList.contains(filename)) {
+                quizSignList.add(filename); // add the file to the list
+                ++signCounter;
+            }
+        }
         loadNextSign(); // start the quiz by loading the first sign
     }
 
@@ -272,7 +277,7 @@ public class MainActivityFragment extends Fragment
     }
 
     // called when a guess Button is touched
-    protected OnClickListener guessButtonListener = new OnClickListener()
+    OnClickListener guessButtonListener = new OnClickListener()
     {
         @Override
         public void onClick(View v)
@@ -287,7 +292,7 @@ public class MainActivityFragment extends Fragment
                 ++correctAnswers; // increment the number of correct answers
 
                 // display correct answer in green text
-                answerTextView.setText(answer + "!");
+                answerTextView.setText(String.format("%s!", answer));
                 answerTextView.setTextColor(
                         getResources().getColor(R.color.correct_answer,
                                 getContext().getTheme()));
@@ -302,6 +307,7 @@ public class MainActivityFragment extends Fragment
                             new DialogFragment()
                             {
                                 // create an AlertDialog and return it
+
                                 @Override
                                 public Dialog onCreateDialog(Bundle bundle)
                                 {
