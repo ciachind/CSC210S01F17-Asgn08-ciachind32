@@ -5,6 +5,8 @@ package com.example.ciach.roadsignquiz;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 
+import com.deitel.flagquiz.R;
+
 public class SettingsActivityFragment extends PreferenceFragment {
    // creates preferences GUI from preferences.xml file in res/xml
    @Override

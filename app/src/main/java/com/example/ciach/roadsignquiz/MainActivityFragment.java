@@ -5,8 +5,7 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-import android.support.annotation.NonNull;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.AlertDialog;
@@ -32,6 +31,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import static com.deitel.flagquiz.R.*;
 
 
 public class MainActivityFragment extends Fragment
@@ -60,10 +61,11 @@ public class MainActivityFragment extends Fragment
     // configures the MainActivityFragment when its View is created
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             Bundle savedInstanceState)
+    {
         super.onCreateView(inflater, container, savedInstanceState);
         View view =
-                inflater.inflate(R.layout.fragment_main, container, false);
+                inflater.inflate(layout.fragment_main, container, false);
 
         fileNameList = new ArrayList<>();
         quizSignList = new ArrayList<>();
@@ -72,31 +74,32 @@ public class MainActivityFragment extends Fragment
 
         // load the shake animation that's used for incorrect answers
         shakeAnimation = AnimationUtils.loadAnimation(getActivity(),
-                R.anim.incorrect_shake);
+                anim.incorrect_shake);
         shakeAnimation.setRepeatCount(3); // animation repeats 3 times
 
         // get references to GUI components
         quizLinearLayout =
-                view.findViewById(R.id.quizLinearLayout);
+                (LinearLayout) view.findViewById(id.quizLinearLayout);
         questionNumberTextView =
-                view.findViewById(R.id.questionNumberTextView);
-        signImageView = view.findViewById(R.id.signImageView);
+                (TextView) view.findViewById(id.questionNumberTextView);
+        signImageView = (ImageView) view.findViewById(id.signImageView);
         guessLinearLayouts = new LinearLayout[2];
         guessLinearLayouts[0] =
-                view.findViewById(R.id.row1LinearLayout);
+                (LinearLayout) view.findViewById(id.row1LinearLayout);
         guessLinearLayouts[1] =
-                view.findViewById(R.id.row2LinearLayout);
-        answerTextView = (TextView) view.findViewById(R.id.answerTextView);
+                (LinearLayout) view.findViewById(id.row2LinearLayout);
+        answerTextView = (TextView) view.findViewById(id.answerTextView);
         // configure listeners for the guess Buttons
         for (LinearLayout row : guessLinearLayouts) {
-            for (int column = 0; column < row.getChildCount(); column++) {
+            for (int column = 0; column < row.getChildCount(); column++)
+            {
                 Button button = (Button) row.getChildAt(column);
                 button.setOnClickListener(guessButtonListener);
             }
         }
 
         // set questionNumberTextView's text
-        questionNumberTextView.setText(getString(R.string.question, 1, SIGNS_IN_QUIZ));
+        questionNumberTextView.setText(getString(string.question, 1, SIGNS_IN_QUIZ));
         return view; // return the fragment's view for display
     }
 
@@ -124,15 +127,16 @@ public class MainActivityFragment extends Fragment
         AssetManager assets = getActivity().getAssets();
         fileNameList.clear(); // empty list of image file names
 
-        try {
+        try
+        {
 
-            {
+                {
                 // get a list of all sign image files in this region
                 String[] paths = assets.list(".png");
 
                 for (String path : paths)
                     fileNameList.add(path.replace(".png", ""));
-            }
+                }
         }
         catch (IOException exception)
         {
@@ -147,14 +151,16 @@ public class MainActivityFragment extends Fragment
         int numberOfSigns = fileNameList.size();
 
         // add FLAGS_IN_QUIZ random file names to the quizCountriesList
-        while (signCounter <= SIGNS_IN_QUIZ) {
+        while (signCounter <= SIGNS_IN_QUIZ)
+        {
             int randomIndex = random.nextInt(numberOfSigns);
 
             // get the random file name
             String filename = fileNameList.get(randomIndex);
 
             // if the region is enabled and it hasn't already been chosen
-            if (!quizSignList.contains(filename)) {
+            if (!quizSignList.contains(filename))
+            {
                 quizSignList.add(filename); // add the file to the list
                 ++signCounter;
             }
@@ -172,7 +178,7 @@ public class MainActivityFragment extends Fragment
 
         // display current question number
         questionNumberTextView.setText(getString(
-                R.string.question, (correctAnswers + 1), SIGNS_IN_QUIZ));
+                string.question, (correctAnswers + 1), SIGNS_IN_QUIZ));
 
         // use AssetManager to load next image from assets folder
         AssetManager assets = getActivity().getAssets();
@@ -188,7 +194,8 @@ public class MainActivityFragment extends Fragment
 
             animate(false); // animate the sign onto the screen
         }
-        catch (IOException exception) {
+        catch (IOException exception)
+        {
             Log.e(TAG, "Error loading " + nextImage, exception);
         }
 
@@ -256,8 +263,8 @@ public class MainActivityFragment extends Fragment
             // create circular reveal animation
             animator = ViewAnimationUtils.createCircularReveal(
                     quizLinearLayout, centerX, centerY, radius, 0);
-            animator.addListener(
-                    new AnimatorListenerAdapter() {
+            animator.addListener(new AnimatorListenerAdapter()
+                    {
                         // called when the animation finishes
                         @Override
                         public void onAnimationEnd(Animator animation)
@@ -267,7 +274,8 @@ public class MainActivityFragment extends Fragment
                     }
             );
         }
-        else { // if the quizLinearLayout should animate in
+        else
+        { // if the quizLinearLayout should animate in
             animator = ViewAnimationUtils.createCircularReveal(
                     quizLinearLayout, centerX, centerY, 0, radius);
         }
@@ -277,7 +285,7 @@ public class MainActivityFragment extends Fragment
     }
 
     // called when a guess Button is touched
-    OnClickListener guessButtonListener = new OnClickListener()
+    private final OnClickListener guessButtonListener = new OnClickListener()
     {
         @Override
         public void onClick(View v)
@@ -292,9 +300,9 @@ public class MainActivityFragment extends Fragment
                 ++correctAnswers; // increment the number of correct answers
 
                 // display correct answer in green text
-                answerTextView.setText(String.format("%s!", answer));
+                answerTextView.setText(answer + "!");
                 answerTextView.setTextColor(
-                        getResources().getColor(R.color.correct_answer,
+                        getResources().getColor(color.correct_answer,
                                 getContext().getTheme()));
 
                 disableButtons(); // disable all guess Buttons
@@ -308,18 +316,19 @@ public class MainActivityFragment extends Fragment
                             {
                                 // create an AlertDialog and return it
 
+                                @NonNull
                                 @Override
                                 public Dialog onCreateDialog(Bundle bundle)
                                 {
                                     AlertDialog.Builder builder =
                                             new AlertDialog.Builder(getActivity());
                                     builder.setMessage(
-                                            getString(R.string.results,
+                                            getString(string.results,
                                                     totalGuesses,
                                                     (1000 / (double) totalGuesses)));
 
                                     // "Reset Quiz" Button
-                                    builder.setPositiveButton(R.string.reset_quiz,
+                                    builder.setPositiveButton(string.reset_quiz,
                                             new DialogInterface.OnClickListener() {
                                                 public void onClick(DialogInterface dialog,
                                                                     int id) {
@@ -351,9 +360,9 @@ public class MainActivityFragment extends Fragment
                 signImageView.startAnimation(shakeAnimation); // play shake
 
                 // display "Incorrect!" in red
-                answerTextView.setText(R.string.incorrect_answer);
+                answerTextView.setText(string.incorrect_answer);
                 answerTextView.setTextColor(getResources().getColor(
-                        R.color.incorrect_answer, getContext().getTheme()));
+                        color.incorrect_answer, getContext().getTheme()));
                 guessButton.setEnabled(false); // disable incorrect answer
             }
         }

@@ -8,14 +8,15 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import java.util.Set;
+import com.deitel.flagquiz.R;
+
+import static android.preference.PreferenceManager.*;
 
 public class MainActivity extends AppCompatActivity {
     // keys for reading data from SharedPreferences
@@ -33,10 +34,10 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         // set default values in the app's SharedPreferences
-        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+        setDefaultValues(this, R.xml.preferences, false);
 
         // register listener for SharedPreferences changes
-        PreferenceManager.getDefaultSharedPreferences(this).
+        getDefaultSharedPreferences(this).
                 registerOnSharedPreferenceChangeListener(
                         preferencesChangeListener);
 
@@ -65,9 +66,9 @@ public class MainActivity extends AppCompatActivity {
             // initialize MainActivityFragment and start the quiz
             MainActivityFragment quizFragment = (MainActivityFragment)
                     getSupportFragmentManager().findFragmentById(R.id.quizFragment);
-            quizFragment.updateGuessRows(
-                    PreferenceManager.getDefaultSharedPreferences(this));
+            quizFragment.updateGuessRows(getDefaultSharedPreferences(this));
             quizFragment.resetQuiz();
+
             preferencesChanged = false;
         }
     }
@@ -97,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // listener for changes to the app's SharedPreferences
-    private OnSharedPreferenceChangeListener preferencesChangeListener =
+    private final OnSharedPreferenceChangeListener preferencesChangeListener =
             new OnSharedPreferenceChangeListener() {
                 // called when the user changes the app's preferences
                 @Override
